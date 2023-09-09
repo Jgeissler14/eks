@@ -15,14 +15,14 @@ resource "aws_iam_role" "eks_cluster_role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "eks_cluster_role_policy_attachment" {
-  role       = aws_iam_role.eks_cluster_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+resource "aws_iam_policy" "eks_cluster_policy" {
+  name = "${var.cluster_name}-eks-cluster-policy"
+  policy = file("${path.module}/min-iam.json")
 }
 
-resource "aws_iam_role_policy_attachment" "eks_cluster_service_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "eks_cluster_role_policy_attachment" {
   role       = aws_iam_role.eks_cluster_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+  policy_arn = aws_iam_policy.eks_cluster_policy.arn
 }
 
 resource "aws_iam_role" "eks_node_role" {
