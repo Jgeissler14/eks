@@ -14,9 +14,5 @@ module "helm" {
     
     domain = var.domain
 
-    eks_cluster_endpoint = module.eks.eks_cluster_endpoint
-    eks_cluster_certificate_authority = module.eks.eks_cluster_certificate_authority
-    cluster_token = module.eks.cluster_token
-
     depends_on = [module.eks]
 }
