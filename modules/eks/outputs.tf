@@ -11,5 +11,5 @@ output "eks_cluster_certificate_authority" {
 }
 
 output "cluster_token" {
-  value = aws_eks_cluster_auth.base.token
+  value = data.aws_eks_cluster_auth.base.token
 }
