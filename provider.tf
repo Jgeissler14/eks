@@ -1,7 +1,7 @@
 # use terraform cloud
 terraform {
   backend "remote" {
-    hostname = "app.terraform.io"
+    hostname     = "app.terraform.io"
     organization = "geisslersolutions"
 
     workspaces {
@@ -16,9 +16,9 @@ provider "aws" {
 }
 
 provider "helm" {
-    kubernetes {
-        host                   = module.eks.eks_cluster_endpoint
-        cluster_ca_certificate = base64decode(module.eks.eks_cluster_certificate_authority)
-        token                  = module.eks.cluster_token
-    }
+  kubernetes {
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority)
+    token                  = module.eks.cluster_token
+  }
 }
