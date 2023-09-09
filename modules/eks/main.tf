@@ -23,3 +23,9 @@ resource "aws_eks_node_group" "base" {
 
   depends_on = [aws_eks_cluster.base]
 }
+
+
+resource "aws_eks_cluster_auth" "base" {
+  name = aws_eks_cluster.base.name
+  depends_on = [aws_eks_cluster.base]
+}
