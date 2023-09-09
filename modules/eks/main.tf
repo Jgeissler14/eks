@@ -13,6 +13,8 @@ resource "aws_eks_node_group" "base" {
   node_role_arn   = aws_iam_role.eks_node_role.arn
   subnet_ids      = var.subnet_ids
 
+  instance_types = ["t2.micro"]
+
   scaling_config {
     desired_size = var.node_group_desired_size
     max_size     = var.node_group_max_size
