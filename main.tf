@@ -3,9 +3,9 @@ module "eks" {
     cluster_name = local.project
 
     subnet_ids = [
-        data.aws_subnet_ids.public.ids[0],
-        data.aws_subnet_ids.public.ids[1],
-        data.aws_subnet_ids.public.ids[2]
+        data.aws_subnet_ids.default.ids[0],
+        data.aws_subnet_ids.default.ids[1],
+        data.aws_subnet_ids.default.ids[2]
     ]
 }
  
