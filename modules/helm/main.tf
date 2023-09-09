@@ -31,6 +31,6 @@ resource "helm_release" "external_dns" {
   create_namespace = true
 
   values = [
-    
+
   ]
 }
