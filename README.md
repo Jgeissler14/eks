@@ -15,11 +15,11 @@ The cluster is then configured via helm to install the following
 
 ## Cluster Login
 ```
-EKS_CLUSTER_NAME=$(terraform output -raw eks_cluster_name)
+EKS_CLUSTER_NAME=$(terraform output -raw cluster_name)
 
-aws eks --region us-east-1 update-kubeconfig --name "$EKS_CLUSTER_NAME"
+aws eks --region us-east-1 update-kubeconfig --name $EKS_CLUSTER_NAME
 
 kubectl config get-contexts
 
-kubectl config use-context "$EKS_CLUSTER_NAME"
+kubectl config use-context $EKS_CLUSTER_NAME
 ```
