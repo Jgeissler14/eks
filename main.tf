@@ -34,13 +34,13 @@ module "eks_blueprints_kubernetes_addons" {
     enable_aws_load_balancer_controller = true
     enable_external_dns                 = true
     eks_cluster_domain                  = var.eks_cluster_domain
-    enable_ingress_nginx                = true
-    ingress_nginx_helm_config = {
-        values = [templatefile("${path.module}/helm_values/nginx-values.yaml", {
-        hostname     = var.eks_cluster_domain
-        ssl_cert_arn = data.aws_acm_certificate.issued.arn
-        })]
-    }
+    # enable_ingress_nginx                = true
+    # ingress_nginx_helm_config = {
+    #     values = [templatefile("${path.module}/helm_values/nginx-values.yaml", {
+    #     hostname     = var.eks_cluster_domain
+    #     ssl_cert_arn = data.aws_acm_certificate.issued.arn
+    #     })]
+    # }
 
     enable_cert_manager = true
     cert_manager_helm_config = {
