@@ -29,7 +29,7 @@ configs:
   ## Creates a secret for each key/value specified below to create repositories
   ## Note: the last example in the list would use a repository credential template, configured under "configs.repositoryCredentials".
   repositories:
-    example-repo:
+    homelab-repo:
       url:  https://github.com/Jgeissler14/homelab.git
 
   # -- Annotations to be added to `configs.repositories` Secret
@@ -123,6 +123,22 @@ server:
       #   - type: Pods
       #     value: 2
       #     periodSeconds: 60
+  additionalApplications:
+    - name: cluster-config
+      namespace: argocd
+      project: default
+      source:
+        repoURL: https://github.com/jgeissler14/homelab.git
+        targetRevision: HEAD
+        path: helm_values/argocd/manifests
+        directory:
+          recurse: true
+      destination:
+        server: https://kubernetes.default.svc
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: false
 
   resources:
    limits:

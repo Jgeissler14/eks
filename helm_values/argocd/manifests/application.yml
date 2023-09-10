@@ -1,0 +1,17 @@
+server:
+  additionalApplications:
+    - name: manifests
+      namespace: argocd
+      project: default
+      source:
+        repoURL: https://github.com/jgeissler14/homelab.git
+        targetRevision: HEAD
+        path: helm_values/argocd/manifests/applications
+        directory:
+          recurse: true
+      destination:
+        server: https://kubernetes.default.svc
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: false
