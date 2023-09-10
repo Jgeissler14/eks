@@ -181,30 +181,7 @@ repoServer:
       #   - type: Pods
       #     value: 2
       #     periodSeconds: 60
-      
-  volumeMounts:
-    - mountPath: /usr/local/bin/argocd-vault-plugin
-      name: custom-tools
-      subPath: argocd-vault-plugin
-
-  # -- envFrom to pass to repo server
-  # @default -- `[]` (See [values.yaml])
-  # envFrom:
-  #   - secretRef:
-  #       name: argocd-vault-plugin-credentials
-  # - configMapRef:
-  #     name: config-map-name
-  # -- Additional volumeMounts to the repo server main container
-  # -- Environment variables to pass to repo server
-  env: 
-    - name: AVP_TYPE
-      value: vault
-    - name: AVP_AUTH_TYPE
-      value: k8s
-    - name: AVP_K8S_ROLE
-      value: argocd
-    - name: AVP_VERSION
-      value: "1.13.1"
+    
 
   # -- Additional volumes to the repo server pod
   ## https://argo-cd.readthedocs.io/en/stable/operator-manual/custom_tools/
@@ -233,18 +210,3 @@ repoServer:
     labels: {}
     # -- Automount API credentials for the Service Account
     automountServiceAccountToken: true    
-
-  # -- Init containers to add to the repo server pods
-  initContainers:
-    - name: download-tools
-      image: alpine:3.8
-      command: [sh, -c]
-      args:
-        - >-
-          wget -O argocd-vault-plugin
-          https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v1.13.1/argocd-vault-plugin_1.13.1_linux_amd64 &&
-          chmod +x argocd-vault-plugin &&
-          mv argocd-vault-plugin /custom-tools/
-      volumeMounts:
-        - mountPath: /custom-tools
-          name: custom-tools
