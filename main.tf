@@ -26,35 +26,16 @@ module "eks_blueprints_kubernetes_addons" {
     amazon_eks_coredns_config = {
         most_recent = true
     }
-
-    # #   enable_amazon_eks_aws_ebs_csi_driver = true
-    # #   enable_aws_efs_csi_driver            = true
-
-    # #   enable_prometheus                    = true
-    # #   enable_amazon_prometheus             = true
-    # #   amazon_prometheus_workspace_endpoint = module.managed_prometheus.workspace_prometheus_endpoint
-
-    # #----------------------------------------------------------------------------------------------------------------------------
-    # # Secrets management for iaac - platform admins are expected to upload secrets in secrets manager
-    # # ensure there is the appropriate files for csi driver & provider to manage secrets. 
-    # # no straggler secrets should exist.
-    # enable_secrets_store_csi_driver_provider_aws = false
-
    
-    # #---------------------------------------------------------------
-    # #  External DNS for EKS
-    # # ensure eks cluster domain kv is set
-    # #---------------------------------------------------------------
-    # enable_aws_load_balancer_controller = true
+    #---------------------------------------------------------------
+    #  External DNS for EKS
+    # ensure eks cluster domain kv is set
+    #---------------------------------------------------------------
+    enable_aws_load_balancer_controller = true
     enable_external_dns                 = true
     eks_cluster_domain                  = var.eks_cluster_domain
-    enable_ingress_nginx                = true
-    ingress_nginx_helm_config = {
-        values = [templatefile("${path.module}/helm_values/nginx-values.yaml", {
-        hostname     = var.eks_cluster_domain
-        ssl_cert_arn = data.aws_acm_certificate.issued.arn
-        })]
-    }
+    # enable_ingress_nginx                = true
+    
 
     enable_cert_manager = true
     cert_manager_helm_config = {

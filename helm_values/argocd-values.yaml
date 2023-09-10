@@ -12,15 +12,10 @@ configs:
     annotations: {}
 
     # -- Argo CD's externally facing base URL (optional). Required when configuring SSO
-    url: "https://argocd.guidehouse.cloud"
+    url: "https://argocd.geisslersolutions.com"
     # -- Enable local admin user
     ## Ref: https://argo-cd.readthedocs.io/en/latest/faq/#how-to-disable-admin-user
     admin.enabled: true
-    configManagementPlugins: |
-      - name: argocd-vault-plugin
-        generate:
-          command: ["argocd-vault-plugin"]
-          args: ["generate", "./"]
 
   # -- Repository credentials to be used as Templates for other repos
   ## Creates a secret for each key/value specified below to create repository credentials
