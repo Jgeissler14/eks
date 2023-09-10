@@ -35,7 +35,12 @@ module "eks_blueprints_kubernetes_addons" {
     enable_external_dns                 = true
     eks_cluster_domain                  = var.eks_cluster_domain
     # enable_ingress_nginx                = true
-    
+    # ingress_nginx_helm_config = {
+    #     values = [templatefile("${path.module}/helm_values/nginx-values.yaml", {
+    #     hostname     = var.eks_cluster_domain
+    #     ssl_cert_arn = data.aws_acm_certificate.issued.arn
+    #     })]
+    # }
 
     enable_cert_manager = true
     cert_manager_helm_config = {
@@ -45,20 +50,20 @@ module "eks_blueprints_kubernetes_addons" {
     cert_manager_install_letsencrypt_issuers = true
     cert_manager_letsencrypt_email           = "josh@geisslersolutions.com"
     cert_manager_domain_names                = ["geisslersolutions.com"]
-    # #----------------------------------------------------------------------------------------------------------------------------
-    # #---------------------------------------------------------------
-    # # ArgoCD - GitOps
-    # #---------------------------------------------------------------
-    # enable_argocd = true
-    # argocd_helm_config = {
-    #     values = [templatefile("${path.module}/helm_values/argocd-values.yaml", {})]
-    #     set_sensitive = [
-    #     {
-    #         name  = "configs.secret.argocdServerAdminPassword"
-    #         value = bcrypt_hash.argo.id
-    #     }
-    #     ]
-    # }
+    #----------------------------------------------------------------------------------------------------------------------------
+    #---------------------------------------------------------------
+    # ArgoCD - GitOps
+    #---------------------------------------------------------------
+    enable_argocd = true
+    argocd_helm_config = {
+        values = [templatefile("${path.module}/helm_values/argocd-values.yaml", {})]
+        set_sensitive = [
+        {
+            name  = "configs.secret.argocdServerAdminPassword"
+            value = bcrypt_hash.argo.id
+        }
+        ]
+    }
 
     #---------------------------------------------------------------
     # ArgoCD Applications: the following applications will be deployed
