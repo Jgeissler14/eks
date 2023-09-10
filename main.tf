@@ -22,10 +22,10 @@ module "eks_blueprints_kubernetes_addons" {
     eks_oidc_provider_arn = module.eks.oidc_provider_arn
     
 
-    # enable_amazon_eks_coredns = true
-    # amazon_eks_coredns_config = {
-    #     most_recent = true
-    # }
+    enable_amazon_eks_coredns = true
+    amazon_eks_coredns_config = {
+        most_recent = true
+    }
 
     # #   enable_amazon_eks_aws_ebs_csi_driver = true
     # #   enable_aws_efs_csi_driver            = true
@@ -40,14 +40,7 @@ module "eks_blueprints_kubernetes_addons" {
     # # no straggler secrets should exist.
     # enable_secrets_store_csi_driver_provider_aws = false
 
-    # # Secrets management for microservices - application managers are to use vault to store their secrets
-    # # they will then be able to render their own secrets to their micro services without
-    # # disrupting other processes
-    # enable_vault = false
-    # vault_helm_config = {
-    #     values = [templatefile("${path.module}/helm_values/vault-values.yaml", {})]
-    # }
-    # #----------------------------------------------------------------------------------------------------------------------------
+   
     # #---------------------------------------------------------------
     # #  External DNS for EKS
     # # ensure eks cluster domain kv is set
