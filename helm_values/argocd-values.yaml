@@ -1,0 +1,255 @@
+## Argo CD configuration
+## Ref: https://github.com/argoproj/argo-cd
+## Argo Configs
+configs:
+  # General Argo CD configuration
+  ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/argocd-cm.yaml
+  cm:
+    # -- Create the argocd-cm configmap for [declarative setup]
+    create: true
+
+    # -- Annotations to be added to argocd-cm configmap
+    annotations: {}
+
+    # -- Argo CD's externally facing base URL (optional). Required when configuring SSO
+    url: "https://argocd.guidehouse.cloud"
+    # -- Enable local admin user
+    ## Ref: https://argo-cd.readthedocs.io/en/latest/faq/#how-to-disable-admin-user
+    admin.enabled: true
+    configManagementPlugins: |
+      - name: argocd-vault-plugin
+        generate:
+          command: ["argocd-vault-plugin"]
+          args: ["generate", "./"]
+
+  # -- Repository credentials to be used as Templates for other repos
+  ## Creates a secret for each key/value specified below to create repository credentials
+  credentialTemplates:
+    https-creds:
+      url: https://github.com
+      password: my-password
+      username: 
+
+  # -- Repositories list to be used by applications
+  ## Creates a secret for each key/value specified below to create repositories
+  ## Note: the last example in the list would use a repository credential template, configured under "configs.repositoryCredentials".
+  repositories:
+    example-repo:
+      url:  https://github.com/Jgeissler14/homelab.git
+
+  # -- Annotations to be added to `configs.repositories` Secret
+  repositoriesAnnotations: {}
+
+  # Argo CD sensitive data
+  # Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#sensitive-data-and-sso-client-secrets
+  secret:
+    # -- Create the argocd-secret
+    createSecret: true
+    # -- Annotations to be added to argocd-secret
+    annotations: {}
+
+    # -- Shared secret for authenticating GitHub webhook events
+    githubSecret: "admin-github"
+
+# -- Array of extra K8s manifests to deploy
+# -- Will need when eks blueprints csi driver + provider is remediated
+extraObjects: []
+  # - apiVersion: secrets-store.csi.x-k8s.io/v1
+  #   kind: SecretProviderClass
+  #   metadata:
+  #     name: argocd-secrets-store
+  #   spec:
+  #     provider: aws
+  #     parameters:
+  #       objects: |
+  #         - objectName: "argocd"
+  #           objectType: "secretsmanager"
+  #           jmesPath:
+  #               - path: "client_id"
+  #                 objectAlias: "client_id"
+  #               - path: "client_secret"
+  #                 objectAlias: "client_secret"
+  #     secretObjects:
+  #     - data:
+  #       - key: client_id
+  #         objectName: client_id
+  #       - key: client_secret
+  #         objectName: client_secret
+  #       secretName: argocd-secrets-store
+  #       type: Opaque
+  #       labels:
+  #         app.kubernetes.io/part-of: argocd
+
+## Application controller
+controller:
+  replica: 1
+  enableStatefulSet: true
+
+  resources: 
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+## Server
+server:
+  # -- Argo CD server name
+  name: server
+
+  # -- The number of server pods to run
+  replicas: 1
+
+  ## Argo CD server Horizontal Pod Autoscaler
+  autoscaling:
+    # -- Enable Horizontal Pod Autoscaler ([HPA]) for the Argo CD server
+    enabled: true
+    # -- Minimum number of replicas for the Argo CD server [HPA]
+    minReplicas: 1
+    # -- Maximum number of replicas for the Argo CD server [HPA]
+    maxReplicas: 5
+    # -- Average CPU utilization percentage for the Argo CD server [HPA]
+    targetCPUUtilizationPercentage: 50
+    # -- Average memory utilization percentage for the Argo CD server [HPA]
+    targetMemoryUtilizationPercentage: 50
+    # -- Configures the scaling behavior of the target in both Up and Down directions.
+    # This is only available on HPA apiVersion `autoscaling/v2beta2` and newer
+    behavior: {}
+      # scaleDown:
+      #  stabilizationWindowSeconds: 300
+      #  policies:
+      #   - type: Pods
+      #     value: 1
+      #     periodSeconds: 180
+      # scaleUp:
+      #   stabilizationWindowSeconds: 300
+      #   policies:
+      #   - type: Pods
+      #     value: 2
+      #     periodSeconds: 60
+
+  resources:
+   limits:
+     cpu: 100m
+     memory: 128Mi
+   requests:
+     cpu: 50m
+     memory: 64Mi
+
+  extraArgs: 
+    - --insecure
+
+  service:
+    type: LoadBalancer
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: argocd.geisslersolutions.com
+      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:285824578675:certificate/a50e3279-4433-4197-9ab7-a3db292860ca"
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+      service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+      service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy: "ELBSecurityPolicy-TLS-1-2-2017-01"
+      service.beta.kubernetes.io/aws-load-balancer-type: "alb"
+
+
+## Repo Server
+repoServer:
+  # -- Repo server name
+  name: repo-server
+
+  # -- The number of repo server pods to run
+  replicas: 1
+
+  ## Repo server Horizontal Pod Autoscaler
+  autoscaling:
+    # -- Enable Horizontal Pod Autoscaler ([HPA]) for the repo server
+    enabled: true
+    # -- Minimum number of replicas for the repo server [HPA]
+    minReplicas: 1
+    # -- Maximum number of replicas for the repo server [HPA]
+    maxReplicas: 5
+    # -- Average CPU utilization percentage for the repo server [HPA]
+    targetCPUUtilizationPercentage: 50
+    # -- Average memory utilization percentage for the repo server [HPA]
+    targetMemoryUtilizationPercentage: 50
+    # -- Configures the scaling behavior of the target in both Up and Down directions.
+    # This is only available on HPA apiVersion `autoscaling/v2beta2` and newer
+    behavior: {}
+      # scaleDown:
+      #  stabilizationWindowSeconds: 300
+      #  policies:
+      #   - type: Pods
+      #     value: 1
+      #     periodSeconds: 180
+      # scaleUp:
+      #   stabilizationWindowSeconds: 300
+      #   policies:
+      #   - type: Pods
+      #     value: 2
+      #     periodSeconds: 60
+      
+  volumeMounts:
+    - mountPath: /usr/local/bin/argocd-vault-plugin
+      name: custom-tools
+      subPath: argocd-vault-plugin
+
+  # -- envFrom to pass to repo server
+  # @default -- `[]` (See [values.yaml])
+  # envFrom:
+  #   - secretRef:
+  #       name: argocd-vault-plugin-credentials
+  # - configMapRef:
+  #     name: config-map-name
+  # -- Additional volumeMounts to the repo server main container
+  # -- Environment variables to pass to repo server
+  env: 
+    - name: AVP_TYPE
+      value: vault
+    - name: AVP_AUTH_TYPE
+      value: k8s
+    - name: AVP_K8S_ROLE
+      value: argocd
+    - name: AVP_VERSION
+      value: "1.13.1"
+
+  # -- Additional volumes to the repo server pod
+  ## https://argo-cd.readthedocs.io/en/stable/operator-manual/custom_tools/
+  volumes:
+    - name: custom-tools
+      emptyDir: {}
+
+  # -- Resource limits and requests for the repo server pods
+  resources:
+   limits:
+     cpu: 50m
+     memory: 128Mi
+   requests:
+     cpu: 10m
+     memory: 64Mi
+  ## Repo server service account
+  ## If create is set to true, make sure to uncomment the name and update the rbac section below
+  serviceAccount:
+    # -- Create repo server service account
+    create: true
+    # -- Repo server service account name
+    name: "argocd-repo-server" # "argocd-repo-server"
+    # -- Annotations applied to created service account
+    annotations: {}
+    # -- Labels applied to created service account
+    labels: {}
+    # -- Automount API credentials for the Service Account
+    automountServiceAccountToken: true    
+
+  # -- Init containers to add to the repo server pods
+  initContainers:
+    - name: download-tools
+      image: alpine:3.8
+      command: [sh, -c]
+      args:
+        - >-
+          wget -O argocd-vault-plugin
+          https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v1.13.1/argocd-vault-plugin_1.13.1_linux_amd64 &&
+          chmod +x argocd-vault-plugin &&
+          mv argocd-vault-plugin /custom-tools/
+      volumeMounts:
+        - mountPath: /custom-tools
+          name: custom-tools

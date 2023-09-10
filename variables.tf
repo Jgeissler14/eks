@@ -2,8 +2,19 @@ variable "AWS_ACCESS_KEY_ID" {}
 
 variable "AWS_SECRET_ACCESS_KEY" {}
 
-variable "domain" {
-  description = "The domain name to use for the cluster"
+##-----------------------------------
+## acm var - external dns
+##-----------------------------------
+variable "acm_certificate_domain" {
   type        = string
-  default     = "geisslersolutions.com."
+  description = "Route53 certificate domain"
+  default     = "*.geisslersolutions.com"
+}
+##-----------------------------------
+## nginx var - external dns
+##-----------------------------------
+variable "eks_cluster_domain" {
+  type        = string
+  description = "Route53 domain for the cluster."
+  default     = "geisslersolutions.com"
 }
