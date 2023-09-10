@@ -23,3 +23,6 @@ kubectl config get-contexts
 
 kubectl config use-context $EKS_CLUSTER_NAME
 ```
+
+# ArgoCD Password
+Retrieve the argocd secret bcrypt_hash.argo cleartext value in the state file
