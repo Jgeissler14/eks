@@ -18,5 +18,5 @@ data "aws_subnets" "default" {
 }
 
 data "aws_route53_zone" "default" {
-  name = "geisslersolutions.com"
+  name = var.domain
 }

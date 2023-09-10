@@ -26,7 +26,7 @@ module "eks_blueprints_addons" {
     enable_aws_load_balancer_controller  = true
 
     enable_cert_manager                  = true
-    cert_manager_domain_names            = ["*.geisslersolutions.com"]
+    cert_manager_domain_names            = [var.domain]
 
     enable_external_dns                  = true
     external_dns_route53_zone_arns       = [data.aws_route53_zone.default.arn]
