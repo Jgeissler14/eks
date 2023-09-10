@@ -63,14 +63,10 @@ module "eks_blueprints_kubernetes_addons" {
     #     })]
     # }
 
-    # enable_cert_manager = true
-    # cert_manager_helm_config = {
-    #     create_namespace = true
-    #     namespace        = "cert-manager"
-    # values = [templatefile("${path.module}/helm_values/certmanager-values.yaml", {})] }
-    # cert_manager_install_letsencrypt_issuers = true
-    # cert_manager_letsencrypt_email           = "josh@geisslersolutions.com"
-    # cert_manager_domain_names                = ["geisslersolutions.com"]
+    enable_cert_manager = true
+    cert_manager_install_letsencrypt_issuers = true
+    cert_manager_letsencrypt_email           = "josh@geisslersolutions.com"
+    cert_manager_domain_names                = ["geisslersolutions.com"]
     # #----------------------------------------------------------------------------------------------------------------------------
     # #---------------------------------------------------------------
     # # ArgoCD - GitOps
