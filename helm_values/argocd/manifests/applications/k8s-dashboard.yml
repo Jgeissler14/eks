@@ -1,16 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: octant
+  name: k8s-dashboard
   namespace: argocd
 spec:
   destination:
-    namespace: octant
+    namespace: k8s-dashboard
     server: https://kubernetes.default.svc
-  project: octant
+  project: k8s-dashboard
   source:
     repoURL: https://kubernetes.github.io/dashboard
     targetRevision: 7.0.0-alpha1
     chart: k8s-dashboard
     helm:
       releaseName: k8s-dashboard
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+  
