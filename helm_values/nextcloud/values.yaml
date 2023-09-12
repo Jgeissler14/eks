@@ -1,7 +1,8 @@
 service:
   type: LoadBalancer
+  port: 443
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: wordpress.geisslersolutions.com
+    external-dns.alpha.kubernetes.io/hostname: nextcloud.geisslersolutions.com
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:285824578675:certificate/a50e3279-4433-4197-9ab7-a3db292860ca"
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
