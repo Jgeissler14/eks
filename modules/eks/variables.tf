@@ -17,7 +17,7 @@ variable "node_group_desired_size" {
 variable "node_group_max_size" {
   description = "The maximum number of worker nodes"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "node_group_min_size" {
