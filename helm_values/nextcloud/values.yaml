@@ -10,8 +10,8 @@ nextcloud:
 # I manually ran kubectl edit -n nextcloud svc nextcloud to add the annotations
 
   # external-dns.alpha.kubernetes.io/hostname: cloud.geisslersolutions.com
-  # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:285824578675:certificate/fbf35d82-be5b-42c0-bf3c-66ab3a6b4606"
-  # service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+  # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:285824578675:certificate/f226d2ef-7429-4bc6-b99a-55fdd33e904a"
+  # service.beta.kubernetes.io/aws-load-balancer-type: "alb"
   # service.beta.kubernetes.io/aws-load-balancer-internal: "true"
   # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
   # service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
