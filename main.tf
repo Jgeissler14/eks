@@ -54,16 +54,16 @@ module "eks_blueprints_kubernetes_addons" {
     #---------------------------------------------------------------
     # ArgoCD - GitOps
     #---------------------------------------------------------------
-    # enable_argocd = true
-    # argocd_helm_config = {
-    #     values = [templatefile("${path.module}/helm_values/argocd/argocd-values.yaml", {})]
-    #     set_sensitive = [
-    #     {
-    #         name  = "configs.secret.argocdServerAdminPassword"
-    #         value = bcrypt_hash.argo.id
-    #     }
-    #     ]
-    # }
+    enable_argocd = true
+    argocd_helm_config = {
+        values = [templatefile("${path.module}/helm_values/argocd/argocd-values.yaml", {})]
+        set_sensitive = [
+        {
+            name  = "configs.secret.argocdServerAdminPassword"
+            value = bcrypt_hash.argo.id
+        }
+        ]
+    }
 
     #---------------------------------------------------------------
     # ArgoCD Applications: the following applications will be deployed
