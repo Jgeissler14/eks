@@ -82,6 +82,7 @@ resource "helm_release" "nextcloud" {
     chart      = "nextcloud"
     namespace  = "nextcloud"
     version    = "4.3.1"
+    create_namespace = true
     
     values = [
         templatefile("${path.module}/helm_values/nextcloud/values.yaml", {})
