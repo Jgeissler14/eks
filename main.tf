@@ -75,3 +75,28 @@ module "eks_blueprints_kubernetes_addons" {
     # }
 
 }
+ 
+resource "helm_release" "nextcloud" {
+    name       = "nextcloud"
+    repository = "https://nextcloud.github.io/helm/"
+    chart      = "nextcloud"
+    namespace  = "nextcloud"
+    version    = "4.3.1"
+    
+    values = [
+        templatefile("${path.module}/helm_values/nextcloud/values.yaml")
+    ]
+
+    set {
+        name  = "service.beta.kubernetes.io/aws-load-balancer-ssl-cert"
+        value = data.aws_acm_certificate.issued.arn
+    }
+    set {
+        name  = "external-dns.alpha.kubernetes.io/hostname"
+        value =  "nextcloud.${var.eks_cluster_domain}"
+    }
+    set {
+        name  = "nextcloud.host"
+        value = "nextcloud.${var.eks_cluster_domain}"
+    }
+}
