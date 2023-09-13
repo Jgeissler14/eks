@@ -84,7 +84,7 @@ resource "helm_release" "nextcloud" {
     version    = "4.3.1"
     
     values = [
-        templatefile("${path.module}/helm_values/nextcloud/values.yaml")
+        templatefile("${path.module}/helm_values/nextcloud/values.yaml", {})
     ]
 
     set {
