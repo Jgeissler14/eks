@@ -94,10 +94,10 @@ resource "helm_release" "nextcloud" {
     }
     set {
         name  = "external-dns.alpha.kubernetes.io/hostname"
-        value =  "nextcloud.${var.eks_cluster_domain}"
+        value =  "cloud.${var.eks_cluster_domain}"
     }
     set {
         name  = "nextcloud.host"
-        value = "nextcloud.${var.eks_cluster_domain}"
+        value = "cloud.${var.eks_cluster_domain}"
     }
 }
