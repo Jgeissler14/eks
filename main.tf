@@ -88,3 +88,16 @@ resource "helm_release" "grafana" {
         templatefile("${path.module}/helm_values/grafana/values.yaml", {})
     ]
 }
+
+# loki
+resource "helm_release" "loki" {
+    repository = "https://grafana.github.io/helm-charts"
+    chart      = "loki"
+    namespace  = "loki"
+    name       = "loki"
+    create_namespace = true
+    version    = "5.20.0"
+    values = [
+        templatefile("${path.module}/helm_values/loki/values.yaml", {})
+    ]
+}
