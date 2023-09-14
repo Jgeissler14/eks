@@ -82,6 +82,7 @@ resource "helm_release" "grafana" {
     chart      = "grafana"
     namespace  = "grafana"
     name       = "grafana"
+    create_namespace = true
     version    = "6.59.4"
     values = [
         templatefile("${path.module}/helm_values/grafana/values.yaml", {})
