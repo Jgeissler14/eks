@@ -76,3 +76,14 @@ module "eks_blueprints_kubernetes_addons" {
 
 }
  
+# grafana dashboard
+resource "helm_release" "grafana" {
+    repository = "https://grafana.github.io/helm-charts"
+    chart      = "grafana"
+    namespace  = "grafana"
+    name       = "grafana"
+    version    = "6.59.4"
+    values = [
+        templatefile("${path.module}/helm_values/grafana/values.yaml", {})
+    ]
+}
