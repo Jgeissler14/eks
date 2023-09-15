@@ -1,103 +1,143 @@
-module "eks" {
-    source       = "github.com/Jgeissler14/terraform-aws/terraform/modules/eks"
-    cluster_name = local.project
+module "vpc" {
+    source  = "terraform-aws-modules/vpc/aws"
+    version = "~> 5.0"
 
-    subnet_ids = [
-        data.aws_subnets.default.ids[0],
-        data.aws_subnets.default.ids[1],
-        data.aws_subnets.default.ids[2]
-    ]
+    name = "${local.project}-vpc"
+    cidr = local.vpc_cidr
+
+    azs             = local.azs
+    private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
+    public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
+
+    enable_nat_gateway = true
+    single_nat_gateway = true
+
+    public_subnet_tags = {
+        "kubernetes.io/role/elb" = 1
+    }
+
+    private_subnet_tags = {
+        "kubernetes.io/role/internal-elb" = 1
+    }
+
+    tags = local.tags
 }
 
+module "eks" {
+    source  = "terraform-aws-modules/eks/aws"
+    version = "~> 19.16"
+
+    cluster_name                   = "${local.project}-cluster"
+    cluster_version                = "1.27"
+    cluster_endpoint_public_access = true
+
+    vpc_id     = module.vpc.vpc_id
+    subnet_ids = module.vpc.private_subnets
+    
+
+    eks_managed_node_groups = {
+        initial = {
+        instance_types = ["t3.small"]
+
+        min_size     = 1
+        max_size     = 5
+        desired_size = 3 # When < 3, the coredns add-on ends up in a degraded state
+        }
+    }
+
+    #  EKS K8s API cluster needs to be able to talk with the EKS worker node
+    node_security_group_additional_rules = {
+        ingress_self_all = {
+            description = "Node to node all ports/protocols"
+            protocol    = "-1"
+            from_port   = 0
+            to_port     = 0
+            type        = "ingress"
+            self        = true
+            }
+        # Recommended outbound traffic for Node groups
+        egress_all = {
+            description      = "Node all egress"
+            protocol         = "-1"
+            from_port        = 0
+            to_port          = 0
+            type             = "egress"
+            cidr_blocks      = ["0.0.0.0/0"]
+            ipv6_cidr_blocks = ["::/0"]
+        }
+    }
+
+    tags = local.tags
+}
 
 
 module "eks_blueprints_kubernetes_addons" {
     source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.32.1"
 
 
-    eks_cluster_id        = module.eks.cluster_name
-    eks_cluster_endpoint  = module.eks.cluster_endpoint
-    eks_cluster_version   = module.eks.cluster_version
-    eks_oidc_provider     = module.eks.oidc_provider
-    eks_oidc_provider_arn = module.eks.oidc_provider_arn
+    eks_cluster_id               = module.eks.cluster_id
+    eks_cluster_endpoint         = module.eks.cluster_endpoint
+    eks_oidc_provider            = module.eks.oidc_provider
+    eks_cluster_version          = module.eks.cluster_platform_version
     
+
+    enable_amazon_eks_vpc_cni = true
+    amazon_eks_vpc_cni_config = {
+        most_recent = true
+    }
 
     enable_amazon_eks_coredns = true
     amazon_eks_coredns_config = {
         most_recent = true
     }
+
+    enable_prometheus                    = true
+    enable_amazon_prometheus             = true
    
+    enable_aws_load_balancer_controller = true
+
     #---------------------------------------------------------------
     #  External DNS for EKS
     # ensure eks cluster domain kv is set
     #---------------------------------------------------------------
-    enable_aws_load_balancer_controller = true
     enable_external_dns                 = true
     eks_cluster_domain                  = var.eks_cluster_domain
-    # enable_ingress_nginx                = true
-    # ingress_nginx_helm_config = {
-    #     values = [templatefile("${path.module}/helm_values/nginx/nginx-values.yaml", {
-    #     hostname     = var.eks_cluster_domain
-    #     ssl_cert_arn = data.aws_acm_certificate.issued.arn
-    #     })]
-    # }
+
+    enable_ingress_nginx                = true
+    ingress_nginx_helm_config = {
+        values = [templatefile("${path.module}/helm_values/nginx/nginx-values.yaml", {
+        hostname     = var.eks_cluster_domain
+        ssl_cert_arn = data.aws_acm_certificate.issued.arn
+        })]
+    }
 
     enable_cert_manager = true
     cert_manager_helm_config = {
         create_namespace = true
         namespace        = "cert-manager"
-    values = [templatefile("${path.module}/helm_values/cert-manager/certmanager-values.yaml", {})] }
+        values = [templatefile("${path.module}/helm_values/cert-manager/certmanager-values.yaml", {})] }
+    
     cert_manager_install_letsencrypt_issuers = true
     cert_manager_letsencrypt_email           = "josh@geisslersolutions.com"
     cert_manager_domain_names                = ["geisslersolutions.com"]
+
     #----------------------------------------------------------------------------------------------------------------------------
     #---------------------------------------------------------------
     # ArgoCD - GitOps
     #---------------------------------------------------------------
-    # enable_argocd = true
-    # argocd_helm_config = {
-    #     values = [templatefile("${path.module}/helm_values/argocd/argocd-values.yaml", {})]
-    #     set_sensitive = [
-    #     {
-    #         name  = "configs.secret.argocdServerAdminPassword"
-    #         value = bcrypt_hash.argo.id
-    #     }
-    #     ]
-    # }
+    enable_argocd = true
+    argocd_helm_config = {
+        values = [templatefile("${path.module}/helm_values/argocd/argocd-values.yaml", {})]
+        set_sensitive = [
+        {
+            name  = "configs.secret.argocdServerAdminPassword"
+            value = bcrypt_hash.argo.id
+        }
+        ]
+    }
 
-    #---------------------------------------------------------------
-    # ArgoCD Applications: the following applications will be deployed
-    # to the cluster by ArgoCD. The applications are defined in the
-    # argocd_applications variable.
-    #---------------------------------------------------------------
-    # argocd_applications = {
-    #   workloads = local.dev_er_workload
-    # }
-
+    depends_on = [
+        module.eks
+    ]
 }
  
-# grafana dashboard
-# resource "helm_release" "grafana" {
-#     repository = "https://grafana.github.io/helm-charts"
-#     chart      = "grafana"
-#     namespace  = "grafana"
-#     name       = "grafana"
-#     create_namespace = true
-#     version    = "6.59.4"
-#     values = [
-#         templatefile("${path.module}/helm_values/grafana/values.yaml", {})
-#     ]
-# }
-
-# # loki
-# resource "helm_release" "loki" {
-#     repository = "https://grafana.github.io/helm-charts"
-#     chart      = "loki"
-#     namespace  = "loki"
-#     name       = "loki"
-#     create_namespace = true
-#     version    = "5.20."
-#     values = [
-#         templatefile("${path.module}/helm_values/loki/values.yaml", {})
-#     ]
-# }

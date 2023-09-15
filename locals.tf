@@ -4,17 +4,10 @@ locals {
     "Project"     = local.project
     "Environment" = "Homelab"
   }
-}
 
-data "aws_vpc" "default" {
-  default = true
-}
-
-data "aws_subnets" "default" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
-  }
+  vpc_cidr = "10.0.0.0/16"
+  region = data.aws_region.current.name
+  azs   = data.aws_availability_zones.available.names
 }
 
 data "aws_acm_certificate" "issued" {
@@ -40,4 +33,8 @@ resource "random_password" "argocd" {
 # as the default bcrypt function generates diff for each terraform plan
 resource "bcrypt_hash" "argo" {
   cleartext = random_password.argocd.result
+}
+
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks.cluster_id
 }
