@@ -72,8 +72,7 @@ module "eks" {
 
 
 module "eks_blueprints_kubernetes_addons" {
-    source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.32.1"
-
+    source = "aws-ia/eks-blueprints-addons/aws"
 
     eks_cluster_id               = module.eks.cluster_name
     eks_cluster_endpoint         = module.eks.cluster_endpoint
@@ -81,14 +80,16 @@ module "eks_blueprints_kubernetes_addons" {
     eks_cluster_version          = module.eks.cluster_platform_version
     
 
-    enable_amazon_eks_vpc_cni = true
-    amazon_eks_vpc_cni_config = {
-        most_recent = true
-    }
-
-    enable_amazon_eks_coredns = true
-    amazon_eks_coredns_config = {
-        most_recent = true
+    eks_addons = {
+        coredns = {
+            most_recent = true
+        }
+        vpc-cni = {
+            most_recent = true
+        }
+        kube-proxy = {
+            most_recent = true
+        }
     }
 
     # enable_prometheus                    = true
