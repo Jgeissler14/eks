@@ -33,6 +33,12 @@ module "eks" {
 
     vpc_id     = module.vpc.vpc_id
     subnet_ids = module.vpc.private_subnets
+
+    cluster_addons = {
+        coredns    = {}
+        kube-proxy = {}
+        vpc-cni    = {}
+    }
     
 
     eks_managed_node_groups = {
@@ -79,17 +85,6 @@ module "eks_blueprints_kubernetes_addons" {
     eks_cluster_endpoint         = module.eks.cluster_endpoint
     eks_oidc_provider            = module.eks.oidc_provider
     eks_cluster_version          = module.eks.cluster_platform_version
-    
-
-    enable_amazon_eks_vpc_cni = true
-    amazon_eks_vpc_cni_config = {
-        most_recent = true
-    }
-
-    enable_amazon_eks_coredns = true
-    amazon_eks_coredns_config = {
-        most_recent = true
-    }
 
     # enable_prometheus                    = true
     # enable_amazon_prometheus             = true
