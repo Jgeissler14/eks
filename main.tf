@@ -78,55 +78,82 @@ module "eks" {
 
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.32.1"
+    source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.32.1"
 
 
-  eks_cluster_id       = module.eks.cluster_name
-  eks_cluster_endpoint = module.eks.cluster_endpoint
-  eks_oidc_provider    = module.eks.oidc_provider
-  eks_cluster_version  = module.eks.cluster_platform_version
+    eks_cluster_id       = module.eks.cluster_name
+    eks_cluster_endpoint = module.eks.cluster_endpoint
+    eks_oidc_provider    = module.eks.oidc_provider
+    eks_cluster_version  = module.eks.cluster_platform_version
 
-  # enable_prometheus                    = true
-  # enable_amazon_prometheus             = true
+    # enable_prometheus                    = true
+    # enable_amazon_prometheus             = true
 
-  enable_aws_load_balancer_controller = true
+    enable_aws_load_balancer_controller = true
 
-  #---------------------------------------------------------------
-  #  External DNS for EKS
-  # ensure eks cluster domain kv is set
-  #---------------------------------------------------------------
-  enable_external_dns = true
-  eks_cluster_domain  = var.eks_cluster_domain
+    #---------------------------------------------------------------
+    #  External DNS for EKS
+    # ensure eks cluster domain kv is set
+    #---------------------------------------------------------------
+    enable_external_dns = true
+    eks_cluster_domain  = var.eks_cluster_domain
 
-  enable_cert_manager = true
-  cert_manager_helm_config = {
-    create_namespace = true
-    namespace        = "cert-manager"
-  values = [templatefile("${path.module}/helm_values/cert-manager/certmanager-values.yaml", {})] }
+    enable_cert_manager = true
+    cert_manager_helm_config = {
+        create_namespace = true
+        namespace        = "cert-manager"
+    values = [templatefile("${path.module}/helm_values/cert-manager/certmanager-values.yaml", {})] }
 
-  cert_manager_install_letsencrypt_issuers = true
-  cert_manager_letsencrypt_email           = "josh@geisslersolutions.com"
-  cert_manager_domain_names                = [var.eks_cluster_domain]
+    cert_manager_install_letsencrypt_issuers = true
+    cert_manager_letsencrypt_email           = "josh@geisslersolutions.com"
+    cert_manager_domain_names                = [var.eks_cluster_domain]
 
-  #----------------------------------------------------------------------------------------------------------------------------
-  #---------------------------------------------------------------
-  # ArgoCD - GitOps
-  #---------------------------------------------------------------
-  enable_argocd = true
-  argocd_helm_config = {
-    values = [templatefile("${path.module}/helm_values/argocd/argocd-values.yaml", {
-      domain = var.eks_cluster_domain
-    })]
-    set_sensitive = [
-      {
-        name  = "configs.secret.argocdServerAdminPassword"
-        value = bcrypt_hash.argo.id
+    #----------------------------------------------------------------------------------------------------------------------------
+    #---------------------------------------------------------------
+    # ArgoCD - GitOps
+    #---------------------------------------------------------------
+    enable_argocd = true
+    argocd_helm_config = {
+        values = [templatefile("${path.module}/helm_values/argocd/argocd-values.yaml", {
+        domain = var.eks_cluster_domain
+        })]
+        set_sensitive = [
+        {
+            name  = "configs.secret.argocdServerAdminPassword"
+            value = bcrypt_hash.argo.id
+        }
+        ]
+    }
+
+    #---------------------------------------------------------------
+    # ArgoCD Applications: the following applications will be deployed
+    # to the cluster by ArgoCD. The applications are defined in the
+    # argocd_applications variable.
+    #---------------------------------------------------------------
+    argocd_applications = {
+      workloads = {
+        path               = "helm_values/argocd/manifests"
+        repo_url           = local.repo
+        add_on_application = false
+        values = {
+        #   labels = {
+        #     env   = local.env.workloads
+        #     myapp = "myvalue"
+        #   }
+          spec = {
+            source = {
+              repoURL = local.repo
+            }
+            blueprint   = "terraform"
+            clusterName = local.name
+            # env = local.env.workloads
+          }
+        }
       }
-    ]
-  }
+    }
 
-  depends_on = [
-    module.eks
-  ]
+    depends_on = [
+        module.eks
+    ]
 }
  
