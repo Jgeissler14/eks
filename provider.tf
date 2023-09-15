@@ -1,7 +1,7 @@
 # use terraform cloud
 terraform {
 
-   required_providers {
+  required_providers {
     aws = {
       source  = "hashicorp/aws"
       version = ">= 4.9"
@@ -26,7 +26,7 @@ terraform {
       source  = "viktorradnai/bcrypt"
       version = ">= 0.1.2"
     }
-   }
+  }
   backend "remote" {
     hostname     = "app.terraform.io"
     organization = "geisslersolutions"
@@ -58,7 +58,7 @@ provider "kubernetes" {
 #note: useful when needing to manually apply a k8s resource -food for thought-
 provider "kubectl" {
   apply_retry_count      = 10
-  host                   =  module.eks.cluster_endpoint
+  host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   load_config_file       = false
   token                  = data.aws_eks_cluster_auth.this.token

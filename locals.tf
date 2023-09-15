@@ -6,12 +6,12 @@ locals {
   }
 
   vpc_cidr = "10.0.0.0/16"
-  region = data.aws_region.current.name
-  azs   = [
+  region   = data.aws_region.current.name
+  azs = [
     data.aws_availability_zones.available.names[0],
-    data.aws_availability_zones.available.names[1], 
+    data.aws_availability_zones.available.names[1],
     data.aws_availability_zones.available.names[2]
-    ]
+  ]
 }
 
 data "aws_acm_certificate" "issued" {
