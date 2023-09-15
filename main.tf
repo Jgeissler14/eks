@@ -132,7 +132,7 @@ module "eks_blueprints_kubernetes_addons" {
     #---------------------------------------------------------------
     argocd_applications = {
       workloads = {
-        path               = "helm_values/argocd/manifests"
+        path               = "helm_values/argocd/apps"
         repo_url           = local.repo
         add_on_application = false
         values = {
