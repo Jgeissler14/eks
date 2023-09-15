@@ -5,7 +5,7 @@ locals {
     "Environment" = "Homelab"
   }
   name = "${local.project}-cluster"
-  repo = "github.com/jgeissler14/homelab"
+  repo = "github.com/jgeissler14/homelab.git"
 
   vpc_cidr = "10.0.0.0/16"
   region   = data.aws_region.current.name
