@@ -1,5 +1,5 @@
 module "eks" {
-    source       = "./modules/eks"
+    source       = "github.com/Jgeissler14/terraform-aws/terraform/modules/eks"
     cluster_name = local.project
 
     subnet_ids = [

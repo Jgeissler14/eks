@@ -23,7 +23,7 @@ configs:
     https-creds:
       url: https://github.com
       password: my-password
-      username: 
+      username: jgeissler14
 
   # -- Repositories list to be used by applications
   ## Creates a secret for each key/value specified below to create repositories
