@@ -40,5 +40,5 @@ resource "bcrypt_hash" "argo" {
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = "${local.project}-cluster"
+  name = module.eks.cluster_name
 }
