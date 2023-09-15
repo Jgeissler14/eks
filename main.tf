@@ -37,11 +37,11 @@ module "eks" {
 
     eks_managed_node_groups = {
         initial = {
-        instance_types = ["t3.small"]
+            instance_types = ["t3.small"]
 
-        min_size     = 1
-        max_size     = 5
-        desired_size = 3 # When < 3, the coredns add-on ends up in a degraded state
+            min_size     = 1
+            max_size     = 5
+            desired_size = 3 # When < 3, the coredns add-on ends up in a degraded state
         }
     }
 
