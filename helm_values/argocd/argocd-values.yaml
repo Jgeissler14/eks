@@ -12,7 +12,7 @@ configs:
     annotations: {}
 
     # -- Argo CD's externally facing base URL (optional). Required when configuring SSO
-    url: "https://argocd.geisslersolutions.com"
+    url: "https://argocd.${domain}"
     # -- Enable local admin user
     ## Ref: https://argo-cd.readthedocs.io/en/latest/faq/#how-to-disable-admin-user
     admin.enabled: true
@@ -154,7 +154,7 @@ server:
   service:
     type: LoadBalancer
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: argocd.geisslersolutions.com
+      external-dns.alpha.kubernetes.io/hostname: argocd.${domain}
       service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:285824578675:certificate/f226d2ef-7429-4bc6-b99a-55fdd33e904a"
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
       service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"

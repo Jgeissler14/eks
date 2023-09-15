@@ -111,7 +111,7 @@ module "eks_blueprints_kubernetes_addons" {
     
     cert_manager_install_letsencrypt_issuers = true
     cert_manager_letsencrypt_email           = "josh@geisslersolutions.com"
-    cert_manager_domain_names                = ["geisslersolutions.com"]
+    cert_manager_domain_names                = [var.eks_cluster_domain]
 
     #----------------------------------------------------------------------------------------------------------------------------
     #---------------------------------------------------------------
@@ -119,7 +119,9 @@ module "eks_blueprints_kubernetes_addons" {
     #---------------------------------------------------------------
     enable_argocd = true
     argocd_helm_config = {
-        values = [templatefile("${path.module}/helm_values/argocd/argocd-values.yaml", {})]
+        values = [templatefile("${path.module}/helm_values/argocd/argocd-values.yaml", {
+            domain = var.eks_cluster_domain
+        })]
         set_sensitive = [
         {
             name  = "configs.secret.argocdServerAdminPassword"
