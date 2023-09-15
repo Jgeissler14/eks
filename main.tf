@@ -91,8 +91,8 @@ module "eks_blueprints_kubernetes_addons" {
         most_recent = true
     }
 
-    enable_prometheus                    = true
-    enable_amazon_prometheus             = true
+    # enable_prometheus                    = true
+    # enable_amazon_prometheus             = true
    
     enable_aws_load_balancer_controller = true
 
