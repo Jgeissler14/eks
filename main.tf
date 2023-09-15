@@ -130,27 +130,27 @@ module "eks_blueprints_kubernetes_addons" {
     # to the cluster by ArgoCD. The applications are defined in the
     # argocd_applications variable.
     #---------------------------------------------------------------
-    argocd_applications = {
-      workloads = {
-        path               = "helm_values/argocd/manifests"
-        repo_url           = local.repo
-        add_on_application = false
-        values = {
-        #   labels = {
-        #     env   = local.env.workloads
-        #     myapp = "myvalue"
-        #   }
-          spec = {
-            source = {
-              repoURL = local.repo
-            }
-            blueprint   = "terraform"
-            clusterName = local.name
-            # env = local.env.workloads
-          }
-        }
-      }
-    }
+    # argocd_applications = {
+    #   workloads = {
+    #     path               = "helm_values/argocd/manifests"
+    #     repo_url           = local.repo
+    #     add_on_application = false
+    #     values = {
+    #     #   labels = {
+    #     #     env   = local.env.workloads
+    #     #     myapp = "myvalue"
+    #     #   }
+    #       spec = {
+    #         source = {
+    #           repoURL = local.repo
+    #         }
+    #         blueprint   = "terraform"
+    #         clusterName = local.name
+    #         # env = local.env.workloads
+    #       }
+    #     }
+    #   }
+    # }
 
     depends_on = [
         module.eks
