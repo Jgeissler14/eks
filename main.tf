@@ -102,7 +102,7 @@ module "eks_blueprints_kubernetes_addons" {
     cert_manager_helm_config = {
         create_namespace = true
         namespace        = "cert-manager"
-    values = [templatefile("${path.module}/helm_values/cert-manager/certmanager-values.yaml", {})] }
+    values = [templatefile("${path.module}/helm/cert-manager/certmanager-values.yaml", {})] }
 
     cert_manager_install_letsencrypt_issuers = true
     cert_manager_letsencrypt_email           = "josh@geisslersolutions.com"
@@ -114,7 +114,7 @@ module "eks_blueprints_kubernetes_addons" {
     #---------------------------------------------------------------
     enable_argocd = true
     argocd_helm_config = {
-        values = [templatefile("${path.module}/helm_values/argocd/argocd-values.yaml", {
+        values = [templatefile("${path.module}/helm/argocd/argocd-values.yaml", {
         domain = var.eks_cluster_domain
         })]
         set_sensitive = [
@@ -132,7 +132,7 @@ module "eks_blueprints_kubernetes_addons" {
     #---------------------------------------------------------------
     argocd_applications = {
       workloads = {
-        path               = "helm_values/argocd/apps"
+        path               = "helm/argocd/apps"
         repo_url           = local.repo
         add_on_application = false
         values = {
