@@ -86,8 +86,8 @@ module "eks_blueprints_kubernetes_addons" {
     eks_oidc_provider    = module.eks.oidc_provider
     eks_cluster_version  = module.eks.cluster_platform_version
 
-    # enable_prometheus                    = true
-    # enable_amazon_prometheus             = true
+    enable_prometheus                    = true
+    enable_amazon_prometheus             = true
 
     enable_aws_load_balancer_controller = true
 
@@ -105,7 +105,7 @@ module "eks_blueprints_kubernetes_addons" {
     values = [templatefile("${path.module}/helm/cert-manager/certmanager-values.yaml", {})] }
 
     cert_manager_install_letsencrypt_issuers = true
-    cert_manager_letsencrypt_email           = "josh@geisslersolutions.com"
+    cert_manager_letsencrypt_email           = var.letsencrypt_email
     cert_manager_domain_names                = [var.eks_cluster_domain]
 
     #----------------------------------------------------------------------------------------------------------------------------
@@ -136,17 +136,12 @@ module "eks_blueprints_kubernetes_addons" {
         repo_url           = local.repo
         add_on_application = false
         values = {
-        #   labels = {
-        #     env   = local.env.workloads
-        #     myapp = "myvalue"
-        #   }
           spec = {
             source = {
               repoURL = local.repo
             }
             blueprint   = "terraform"
             clusterName = local.name
-            # env = local.env.workloads
           }
         }
       }
