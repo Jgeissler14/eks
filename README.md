@@ -61,7 +61,7 @@ To add an Application, add a file to [Templates](./helm/argocd/workloads/templat
 
 ### Deploying Applications to Specific Domains
 
-To deploy applications to specific domains, you can use annotations in the Helm chart values. For example, refer to [Grafana](./helm/argocd/workloads/templates/grafana.yaml)
+To deploy applications to specific domains, you can use annotations in the Helm chart values. For example, refer to [VaultWarden Example](./helm/argocd/workloads/templates/vaultwarden.yaml)
 
 # ArgoCD Password
 Retrieve the argocd password from the terraform outputs, the username is admin

@@ -86,8 +86,8 @@ module "eks_blueprints_kubernetes_addons" {
     eks_oidc_provider    = module.eks.oidc_provider
     eks_cluster_version  = module.eks.cluster_platform_version
 
-    enable_prometheus                    = true
-    enable_amazon_prometheus             = true
+    enable_kube_prometheus_stack           = true
+    enable_metrics_server                  = true
 
     enable_aws_load_balancer_controller = true
 
@@ -115,8 +115,8 @@ module "eks_blueprints_kubernetes_addons" {
     enable_argocd = true
     argocd_helm_config = {
         values = [templatefile("${path.module}/helm/argocd/argocd-values.yaml", {
-          domain = var.eks_cluster_domain,
-          acm_cert_arn = data.aws_acm_certificate.issued.arn,
+          domain = "${var.eks_cluster_domain}",
+          acm_cert_arn = "${data.aws_acm_certificate.issued.arn}",
         })]
         set_sensitive = [
         {
