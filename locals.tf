@@ -1,13 +1,12 @@
 locals {
-  project = "homelab"
   tags = {
-    "Project"     = local.project
-    "Environment" = "Homelab"
+    Project     = var.project
+    Environment = var.env
+    Terraform   = "true"
   }
-  name = "${local.project}-cluster"
+  name = "${var.project}-${var.env}-cluster"
   repo = "https://github.com/Jgeissler14/homelab.git"
 
-  vpc_cidr = "10.0.0.0/16"
   region   = data.aws_region.current.name
   azs = [
     data.aws_availability_zones.available.names[0],

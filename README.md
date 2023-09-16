@@ -4,6 +4,7 @@
 AWS CLI installed and configured.
 Terraform (version >= 0.12).
 AWS account with access keys.
+ACM Certificiate created for your domain
 Usage:
 
 Clone this repository.

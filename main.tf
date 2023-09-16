@@ -2,12 +2,12 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
 
-  name = "${local.project}-vpc"
-  cidr = local.vpc_cidr
+  name = "${var.project}-vpc"
+  cidr = var.vpc_cidr
 
   azs             = local.azs
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 4, k)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k + 48)]
 
   enable_nat_gateway = true
   single_nat_gateway = true
@@ -27,7 +27,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 19.16"
 
-  cluster_name                   = "${local.project}-cluster"
+  cluster_name                   = local.name
   cluster_version                = "1.27"
   cluster_endpoint_public_access = true
 
@@ -43,11 +43,11 @@ module "eks" {
 
   eks_managed_node_groups = {
     initial = {
-      instance_types = ["t3.small"]
+      instance_types = var.instance_types
 
-      min_size     = 1
-      max_size     = 5
-      desired_size = 3 # When < 3, the coredns add-on ends up in a degraded state
+      min_size     = var.asg_min_size
+      max_size     = var.asg_max_size
+      desired_size = var.asg_desired_capacity
     }
   }
 
@@ -115,7 +115,8 @@ module "eks_blueprints_kubernetes_addons" {
     enable_argocd = true
     argocd_helm_config = {
         values = [templatefile("${path.module}/helm/argocd/argocd-values.yaml", {
-        domain = var.eks_cluster_domain
+          domain = var.eks_cluster_domain,
+          acm_cert_arn = data.aws_acm_certificate.issued.arn,
         })]
         set_sensitive = [
         {
