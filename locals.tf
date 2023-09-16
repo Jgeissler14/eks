@@ -5,7 +5,7 @@ locals {
     Terraform   = "true"
   }
   name = "${var.project}-${var.env}-cluster"
-  repo = "https://github.com/Jgeissler14/paas.git"
+  repo = "https://github.com/Jgeissler14/PaaS.git"
 
   region   = data.aws_region.current.name
   azs = [
