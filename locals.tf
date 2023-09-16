@@ -7,7 +7,7 @@ locals {
   name = "${var.project}-${var.env}-cluster"
   repo = "https://github.com/Jgeissler14/PaaS.git"
 
-  region   = data.aws_region.current.name
+  region = data.aws_region.current.name
   azs = [
     data.aws_availability_zones.available.names[0],
     data.aws_availability_zones.available.names[1],

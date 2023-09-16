@@ -36,9 +36,9 @@ module "eks" {
 
   cluster_addons = {
     aws-ebs-csi-driver = {}
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
+    coredns            = {}
+    kube-proxy         = {}
+    vpc-cni            = {}
   }
 
 
@@ -79,81 +79,81 @@ module "eks" {
 
 
 module "eks_blueprints_kubernetes_addons" {
-    source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.32.1"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.32.1"
 
+  eks_cluster_id       = module.eks.cluster_name
+  eks_cluster_endpoint = module.eks.cluster_endpoint
+  eks_oidc_provider    = module.eks.oidc_provider
+  eks_cluster_version  = module.eks.cluster_platform_version
 
-    eks_cluster_id       = module.eks.cluster_name
-    eks_cluster_endpoint = module.eks.cluster_endpoint
-    eks_oidc_provider    = module.eks.oidc_provider
-    eks_cluster_version  = module.eks.cluster_platform_version
+  enable_cluster_autoscaler = true
 
-    enable_kube_prometheus_stack           = true
-    enable_metrics_server                  = true
-    enable_aws_cloudwatch_metrics          = true
-    enable_vpa                             = true
-    enable_aws_efs_csi_driver              = true
+  enable_kube_prometheus_stack        = true
+  enable_metrics_server               = true
+  enable_aws_cloudwatch_metrics       = true
+  enable_vpa                          = true
+  enable_aws_efs_csi_driver           = true
+  enable_aws_load_balancer_controller = true
 
-    enable_aws_load_balancer_controller = true
+  #---------------------------------------------------------------
+  #  External DNS for EKS
+  # ensure eks cluster domain kv is set
+  #---------------------------------------------------------------
+  enable_external_dns = true
+  eks_cluster_domain  = var.eks_cluster_domain
 
-    #---------------------------------------------------------------
-    #  External DNS for EKS
-    # ensure eks cluster domain kv is set
-    #---------------------------------------------------------------
-    enable_external_dns = true
-    eks_cluster_domain  = var.eks_cluster_domain
+  enable_cert_manager = true
+  cert_manager_helm_config = {
+    create_namespace = true
+    namespace        = "cert-manager"
+  values = [templatefile("${path.module}/helm/cert-manager/certmanager-values.yaml", {})] }
 
-    enable_cert_manager = true
-    cert_manager_helm_config = {
-        create_namespace = true
-        namespace        = "cert-manager"
-    values = [templatefile("${path.module}/helm/cert-manager/certmanager-values.yaml", {})] }
+  cert_manager_install_letsencrypt_issuers = true
+  cert_manager_letsencrypt_email           = var.letsencrypt_email
+  cert_manager_domain_names                = [var.eks_cluster_domain]
 
-    cert_manager_install_letsencrypt_issuers = true
-    cert_manager_letsencrypt_email           = var.letsencrypt_email
-    cert_manager_domain_names                = [var.eks_cluster_domain]
+  #----------------------------------------------------------------------------------------------------------------------------
+  #---------------------------------------------------------------
+  # ArgoCD - GitOps
+  #---------------------------------------------------------------
+  enable_argocd = true
+  argocd_helm_config = {
+    values = [templatefile("${path.module}/helm/argocd/argocd-values.yaml", {
+      domain       = "${var.eks_cluster_domain}",
+      acm_cert_arn = "${data.aws_acm_certificate.issued.arn}",
+    })]
+    set_sensitive = [
+      {
+        name  = "configs.secret.argocdServerAdminPassword"
+        value = bcrypt_hash.argo.id
+      }
+    ]
+  }
 
-    #----------------------------------------------------------------------------------------------------------------------------
-    #---------------------------------------------------------------
-    # ArgoCD - GitOps
-    #---------------------------------------------------------------
-    enable_argocd = true
-    argocd_helm_config = {
-        values = [templatefile("${path.module}/helm/argocd/argocd-values.yaml", {
-          domain = "${var.eks_cluster_domain}",
-          acm_cert_arn = "${data.aws_acm_certificate.issued.arn}",
-        })]
-        set_sensitive = [
-        {
-            name  = "configs.secret.argocdServerAdminPassword"
-            value = bcrypt_hash.argo.id
-        }
-        ]
-    }
-
-    #---------------------------------------------------------------
-    # ArgoCD Applications: the following applications will be deployed
-    # to the cluster by ArgoCD. The applications are defined in the
-    # argocd_applications variable.
-    #---------------------------------------------------------------
-    argocd_applications = {
-      workloads = {
-        path               = "helm/argocd/workloads"
-        repo_url           = local.repo
-        add_on_application = false
-        values = {
-          spec = {
-            source = {
-              repoURL = local.repo
-            }
-            blueprint   = "terraform"
-            clusterName = local.name
+  #---------------------------------------------------------------
+  # ArgoCD Applications: the following applications will be deployed
+  # to the cluster by ArgoCD. The applications are defined in the
+  # argocd_applications variable.
+  #---------------------------------------------------------------
+  argocd_applications = {
+    workloads = {
+      path               = "helm/argocd/workloads"
+      repo_url           = local.repo
+      add_on_application = false
+      values = {
+        spec = {
+          source = {
+            repoURL = local.repo
           }
+          blueprint   = "terraform"
+          clusterName = local.name
         }
       }
     }
+  }
 
-    depends_on = [
-        module.eks
-    ]
+  depends_on = [
+    module.eks
+  ]
 }
- 
+
