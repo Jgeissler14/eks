@@ -35,6 +35,7 @@ module "eks" {
   subnet_ids = module.vpc.private_subnets
 
   cluster_addons = {
+    aws-ebs-csi-driver = {}
     coredns    = {}
     kube-proxy = {}
     vpc-cni    = {}
@@ -88,6 +89,9 @@ module "eks_blueprints_kubernetes_addons" {
 
     enable_kube_prometheus_stack           = true
     enable_metrics_server                  = true
+    enable_aws_cloudwatch_metrics          = true
+    enable_vpa                             = true
+    enable_aws_efs_csi_driver              = true
 
     enable_aws_load_balancer_controller = true
 
