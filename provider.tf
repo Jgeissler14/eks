@@ -32,7 +32,7 @@ terraform {
     organization = "geisslersolutions"
 
     workspaces {
-      name = "homelab"
+      name = "paas"
     }
   }
 }

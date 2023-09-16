@@ -29,8 +29,8 @@ configs:
   ## Creates a secret for each key/value specified below to create repositories
   ## Note: the last example in the list would use a repository credential template, configured under "configs.repositoryCredentials".
   repositories:
-    homelab-repo:
-      url:  https://github.com/Jgeissler14/homelab.git
+    paas-repo:
+      url:  https://github.com/Jgeissler14/paas.git
 
   # -- Annotations to be added to `configs.repositories` Secret
   repositoriesAnnotations: {}
