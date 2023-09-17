@@ -43,6 +43,8 @@ spec:
     chart: istiod
     helm:
       releaseName: istiod
+      values: |
+        meshConfig.accessLogFile
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
