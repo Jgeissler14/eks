@@ -1,4 +1,4 @@
-# Terraform EKS Cluster Deployment
+# Terraform EKS Cluster Deployment(PaaS)
 ## Prerequisites:
 
 AWS CLI installed and configured.
