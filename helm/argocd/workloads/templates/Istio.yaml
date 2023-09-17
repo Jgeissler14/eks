@@ -44,7 +44,8 @@ spec:
     helm:
       releaseName: istiod
       values: |
-        meshConfig.accessLogFile
+        meshConfig:
+          accessLogFile = "/dev/stdout"
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -73,7 +74,7 @@ spec:
             "service.beta.kubernetes.io/aws-load-balancer-scheme"     = "internet-facing"
             "service.beta.kubernetes.io/aws-load-balancer-attributes" = "load_balancing.cross_zone.enabled=true"
         labels:
-          istio: ingressgateway
+          istio = ingressgateway
               
   syncPolicy:
     syncOptions:
