@@ -86,8 +86,6 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks.oidc_provider
   eks_cluster_version  = module.eks.cluster_platform_version
 
-  enable_cluster_autoscaler = true
-
   enable_kube_prometheus_stack        = true
   enable_metrics_server               = true
   enable_aws_cloudwatch_metrics       = true

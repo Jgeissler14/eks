@@ -35,13 +35,13 @@ variable "asg_min_size" {
 variable "asg_max_size" {
   description = "Maximum size of the worker node autoscaling group"
   type        = number
-  default     = 5
+  default     = 10
 }
 
 variable "asg_desired_capacity" {
   description = "Desired capacity of the worker node autoscaling group"
   type        = number
-  default     = 3
+  default     = 5
 }
 
 
