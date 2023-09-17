@@ -86,20 +86,6 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks.oidc_provider
   eks_cluster_version  = module.eks.cluster_platform_version
 
-  enable_aws_efs_csi_driver    = true
-  enable_aws_fsx_csi_driver    = true
-  enable_kube_prometheus_stack = true
-  kube_prometheus_stack = {
-    values = [
-      <<-EOT
-        prometheus:
-          prometheusSpec:
-            serviceMonitorSelectorNilUsesHelmValues: false
-      EOT
-    ]
-  }
-  enable_metrics_server = true
-
   enable_vpa                          = true
   enable_aws_efs_csi_driver           = true
   enable_aws_load_balancer_controller = true
