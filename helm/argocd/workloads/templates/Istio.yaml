@@ -19,8 +19,12 @@ spec:
     helm:
       releaseName: istio-base   
   syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
+    automated: 
+      prune: true 
+      selfHeal: true 
+      allowEmpty: false 
+    syncOptions:     
+  - CreateNamespace=true 
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -44,6 +48,11 @@ spec:
       releaseName: istiod
       values: |
         "meshConfig.accessLogFile" = "/dev/stdout"
+  syncPolicy:
+    automated: 
+      prune: true 
+      selfHeal: true 
+      allowEmpty: false 
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -73,7 +82,17 @@ spec:
             "service.beta.kubernetes.io/aws-load-balancer-attributes" = "load_balancing.cross_zone.enabled=true"
         labels:
           istio = ingressgateway
-              
   syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
+    automated: 
+      prune: true 
+      selfHeal: true 
+      allowEmpty: false 
+    syncOptions:     
+    - Validate=false 
+    - CreateNamespace=true 
+    - PrunePropagationPolicy=foreground 
+    - PruneLast=true 
+    - RespectIgnoreDifferences=true 
+    managedNamespaceMetadata: 
+      labels: 
+        istio-injection: enabled
