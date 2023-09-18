@@ -28,7 +28,7 @@ module "eks" {
   version = "~> 19.16"
 
   cluster_name                   = local.name
-  cluster_version                = "1.27"
+  cluster_version                = "1.28"
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
@@ -85,6 +85,9 @@ module "eks_blueprints_kubernetes_addons" {
   eks_cluster_endpoint = module.eks.cluster_endpoint
   eks_oidc_provider    = module.eks.oidc_provider
   eks_cluster_version  = module.eks.cluster_platform_version
+
+  enable_karpenter                       = true
+  enable_kube_prometheus_stack           = true
 
   enable_vpa                          = true
   # enable_aws_efs_csi_driver           = true
