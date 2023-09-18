@@ -17,8 +17,7 @@ spec:
     targetRevision: 1.18.1
     chart: base
     helm:
-      releaseName: istio-base
-              
+      releaseName: istio-base   
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
@@ -44,8 +43,7 @@ spec:
     helm:
       releaseName: istiod
       values: |
-        meshConfig:
-          accessLogFile = "/dev/stdout"
+        "meshConfig.accessLogFile" = "/dev/stdout"
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
