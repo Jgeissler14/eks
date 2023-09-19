@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     path: helm-guestbook
-    repoURL: {{ .Values.spec.source.repoURL }}
+    repoURL: https://github.com/argoproj/argocd-example-apps
     targetRevision: HEAD
     helm:
       releaseName: helm-guestbook
