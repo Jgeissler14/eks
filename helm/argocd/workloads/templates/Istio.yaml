@@ -95,4 +95,4 @@ spec:
     - RespectIgnoreDifferences=true 
     managedNamespaceMetadata: 
       labels: 
-        istio-injection: enabled
+        istio-injection = enabled
