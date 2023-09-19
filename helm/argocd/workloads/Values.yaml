@@ -1,7 +1,6 @@
-guestbook:
-  spec:
-    destination:
-      server: https://kubernetes.default.svc
-    source:
-      repoURL: https://github.com/argoproj/argocd-example-apps
-      targetRevision: HEAD
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://github.com/argoproj/argocd-example-apps
+    targetRevision: HEAD

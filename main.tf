@@ -86,6 +86,9 @@ module "eks_blueprints_kubernetes_addons" {
   eks_oidc_provider    = module.eks.oidc_provider
   eks_cluster_version  = module.eks.cluster_platform_version
 
+  enable_karpenter                       = true
+  enable_kube_prometheus_stack           = true
+
   enable_vpa                          = true
   # enable_aws_efs_csi_driver           = true
   enable_aws_load_balancer_controller = true
