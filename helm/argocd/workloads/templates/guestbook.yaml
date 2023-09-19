@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     path: helm-guestbook
-    repoURL: {{ .Values.spec.source.repoURL }}
+    repoURL: {{ .Values.guestbook.spec.source.repoURL }}
     targetRevision: HEAD
     helm:
       releaseName: helm-guestbook
