@@ -83,14 +83,14 @@ spec:
         labels:
           istio = "ingressgateway"
   syncPolicy:
+    managedNamespaceMetadata: 
+      labels: 
+        istio-injection: enabled
     automated: 
       prune: true 
       selfHeal: true 
       allowEmpty: false 
     syncOptions:     
-    - Validate=false 
     - CreateNamespace=true 
-    - PrunePropagationPolicy=foreground 
-    - PruneLast=true 
-    - RespectIgnoreDifferences=true 
+
     
