@@ -12,9 +12,16 @@ spec:
   project: default
   source:
     path: helm-guestbook
-    repoURL: {{ .Values.spec.source.repoURL }}
+    repoURL: https://github.com/argoproj/argocd-example-apps
     targetRevision: HEAD
     helm:
       releaseName: helm-guestbook
       valueFiles:
         - values.yaml
+  syncPolicy:
+    automated: 
+      prune: true 
+      selfHeal: true 
+      allowEmpty: false 
+    syncOptions:     
+    - CreateNamespace=true 
