@@ -81,8 +81,11 @@ spec:
             "service.beta.kubernetes.io/aws-load-balancer-scheme"     = "internet-facing"
             "service.beta.kubernetes.io/aws-load-balancer-attributes" = "load_balancing.cross_zone.enabled=true"
         labels:
-          istio = ingressgateway
+          istio = "ingressgateway"
   syncPolicy:
+    managedNamespaceMetadata: 
+      labels: 
+        istio-injection: enabled
     automated: 
       prune: true 
       selfHeal: true 
@@ -93,6 +96,4 @@ spec:
     - PrunePropagationPolicy=foreground 
     - PruneLast=true 
     - RespectIgnoreDifferences=true 
-    managedNamespaceMetadata: 
-      labels: 
-        istio-injection = enabled
+    
