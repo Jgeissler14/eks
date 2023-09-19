@@ -1,98 +1,98 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: istio-base
-#   namespace: argocd
-#   finalizers:
-#     - resources-finalizer.argocd.argoproj.io
-#   annotations:
-#     argocd.argoproj.io/sync-wave: "1"
-# spec:
-#   destination:
-#     namespace: istio-system
-#     server: https://kubernetes.default.svc
-#   project: default
-#   source:
-#     repoURL: https://istio-release.storage.googleapis.com/charts
-#     targetRevision: 1.18.1
-#     chart: base
-#     helm:
-#       releaseName: istio-base   
-#   syncPolicy:
-#     automated: 
-#       prune: true 
-#       selfHeal: true 
-#       allowEmpty: false 
-#     syncOptions:     
-#   - CreateNamespace=true 
-# ---
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: istiod
-#   namespace: argocd
-#   finalizers:
-#     - resources-finalizer.argocd.argoproj.io
-#   annotations:
-#     argocd.argoproj.io/sync-wave: "1"
-# spec:
-#   destination:
-#     namespace: istio-system
-#     server: https://kubernetes.default.svc
-#   project: default
-#   source:
-#     repoURL: https://istio-release.storage.googleapis.com/charts
-#     targetRevision: 1.18.1
-#     chart: istiod
-#     helm:
-#       releaseName: istiod
-#       values: |
-#         "meshConfig.accessLogFile" = "/dev/stdout"
-#   syncPolicy:
-#     automated: 
-#       prune: true 
-#       selfHeal: true 
-#       allowEmpty: false 
-# ---
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: istio-ingress
-#   namespace: argocd
-#   finalizers:
-#     - resources-finalizer.argocd.argoproj.io
-#   annotations:
-#     argocd.argoproj.io/sync-wave: "1"
-# spec:
-#   destination:
-#     namespace: istio-ingress
-#     server: https://kubernetes.default.svc
-#   project: default
-#   source:
-#     repoURL: https://istio-release.storage.googleapis.com/charts
-#     targetRevision: 1.18.1
-#     chart: gateway
-#     helm:
-#       releaseName: istio-ingress
-#       values: |
-#         service:
-#           annotations:
-#             "service.beta.kubernetes.io/aws-load-balancer-type"       = "nlb"
-#             "service.beta.kubernetes.io/aws-load-balancer-scheme"     = "internet-facing"
-#             "service.beta.kubernetes.io/aws-load-balancer-attributes" = "load_balancing.cross_zone.enabled=true"
-#         labels:
-#           istio = ingressgateway
-#   syncPolicy:
-#     automated: 
-#       prune: true 
-#       selfHeal: true 
-#       allowEmpty: false 
-#     syncOptions:     
-#     - Validate=false 
-#     - CreateNamespace=true 
-#     - PrunePropagationPolicy=foreground 
-#     - PruneLast=true 
-#     - RespectIgnoreDifferences=true 
-#     managedNamespaceMetadata: 
-#       labels: 
-#         istio-injection: enabled
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-base
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  destination:
+    namespace: istio-system
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    targetRevision: 1.18.1
+    chart: base
+    helm:
+      releaseName: istio-base   
+  syncPolicy:
+    automated: 
+      prune: true 
+      selfHeal: true 
+      allowEmpty: false 
+    syncOptions:     
+  - CreateNamespace=true 
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istiod
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  destination:
+    namespace: istio-system
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    targetRevision: 1.18.1
+    chart: istiod
+    helm:
+      releaseName: istiod
+      values: |
+        "meshConfig.accessLogFile" = "/dev/stdout"
+  syncPolicy:
+    automated: 
+      prune: true 
+      selfHeal: true 
+      allowEmpty: false 
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-ingress
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  destination:
+    namespace: istio-ingress
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    targetRevision: 1.18.1
+    chart: gateway
+    helm:
+      releaseName: istio-ingress
+      values: |
+        service:
+          annotations:
+            "service.beta.kubernetes.io/aws-load-balancer-type"       = "nlb"
+            "service.beta.kubernetes.io/aws-load-balancer-scheme"     = "internet-facing"
+            "service.beta.kubernetes.io/aws-load-balancer-attributes" = "load_balancing.cross_zone.enabled=true"
+        labels:
+          istio = ingressgateway
+  syncPolicy:
+    automated: 
+      prune: true 
+      selfHeal: true 
+      allowEmpty: false 
+    syncOptions:     
+    - Validate=false 
+    - CreateNamespace=true 
+    - PrunePropagationPolicy=foreground 
+    - PruneLast=true 
+    - RespectIgnoreDifferences=true 
+    managedNamespaceMetadata: 
+      labels: 
+        istio-injection: enabled
