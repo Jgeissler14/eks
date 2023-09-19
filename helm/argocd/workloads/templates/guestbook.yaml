@@ -8,12 +8,12 @@ metadata:
 spec:
   destination:
     namespace: helm-guestbook
-    server: {{ .Values.guestbook.spec.destination.server }}
+    server: https://kubernetes.default.svc
   project: default
   source:
     path: helm-guestbook
     repoURL: {{ .Values.guestbook.spec.source.repoURL }}
-    targetRevision: {{ .Values.guestbook.spec.source.targetRevision }}
+    targetRevision: HEAD
     helm:
       releaseName: helm-guestbook
       valueFiles:
