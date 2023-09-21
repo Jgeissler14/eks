@@ -11,9 +11,8 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: backstage
+    chart: backstage
     repoURL: https://backstage.github.io/charts
-    targetRevision: HEAD
     helm:
       releaseName: backstage
       values: |
