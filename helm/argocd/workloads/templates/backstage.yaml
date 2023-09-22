@@ -13,6 +13,7 @@ spec:
   source:
     chart: backstage
     repoURL: https://backstage.github.io/charts
+    targetRevision: 1.3.0
     helm:
       releaseName: backstage
       values: |
