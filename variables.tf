@@ -47,18 +47,18 @@ variable "asg_desired_capacity" {
 
 variable "acm_certificate_domain" {
   type        = string
-  default     = "*.geisslersolutions.com"
+  default     = "*.cloudzap.co"
   description = "Route53 certificate domain"
 }
 
 variable "eks_cluster_domain" {
   type        = string
-  default     = "geisslersolutions.com"
+  default     = "cloudzap.co"
   description = "Route53 domain for the cluster."
 }
 
 variable "letsencrypt_email" {
   description = "Email for Let's Encrypt"
   type        = string
-  default     = "josh@geisslersolutions.com"
+  default     = "josh@cloudzap.co"
 }
