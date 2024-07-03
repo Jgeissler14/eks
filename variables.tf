@@ -47,18 +47,18 @@ variable "asg_desired_capacity" {
 
 variable "acm_certificate_domain" {
   type        = string
-  default     = "*.cloudzap.co"
+  default     = "*.joincloudzap.com"
   description = "Route53 certificate domain"
 }
 
 variable "eks_cluster_domain" {
   type        = string
-  default     = "cloudzap.co"
+  default     = "joincloudzap.com"
   description = "Route53 domain for the cluster."
 }
 
 variable "letsencrypt_email" {
   description = "Email for Let's Encrypt"
   type        = string
-  default     = "josh@cloudzap.co"
+  default     = "josh@joincloudzap.com"
 }
