@@ -1,29 +1,4 @@
-# Josh's `Homelab`
-
-**Hey, there!**
-
-This Repository **Homelab** contains all my homelab documentation files. Here you'll find notes, setups, and configurations for infrastructure, applications, networking, and more.
-
-> :warning: Be aware, products can change over time. I do my best to keep up with the latest changes and releases, but please understand that this won’t always be the case.
-
-I created them as free resources to be used in your specific use cases. If you're searching for detailed, in-depth tutorials on some tools or technologies, check out my [YouTube Channel](https://www.youtube.com/@JoshGeissler).
-
-## Table of Contents
-1. [Overview](#overview)
-2. [Prerequisites](#prerequisites)
-3. [Usage](#usage)
-4. [Infrastructure Diagram](#infrastructure-diagram)
-5. [Terraform Variable Configuration](#terraform-variable-configuration)
-6. [Terraform Outputs](#terraform-outputs)
-7. [Terraform Modules](#terraform-modules)
-8. [Configuration](#configuration)
-9. [Managing ArgoCD Applications](#managing-argocd-applications)
-10. [Cleanup](#cleanup)
-11. [License](#license)
-
----
-
-## Overview
+# Overview
 This project provides a Terraform script for deploying an EKS cluster on AWS as a Platform as a Service (PaaS). It includes modules for VPC, EKS, and Kubernetes addons, and it's designed to be easily configurable and extensible.
 
 ---
